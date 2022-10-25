@@ -21,7 +21,7 @@ def departmentApi(request):
         else:
             return Response(serializer.errors)
 
-@api_view(['GET','PUT','DELETE'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def departmentDetailsApi(request, pk):
     if request.method == 'GET':
         department = Departments.objects.get(pk=pk)
@@ -40,4 +40,44 @@ def departmentDetailsApi(request, pk):
     if request.method == 'DELETE':
         department = Departments.objects.get(pk=pk)
         department.delete()
+        return Response({'Content just deleted'})
+
+
+# ------------------------------------------------------------------------
+
+@api_view(['GET', 'POST'])
+def employeeApi(request):
+    if request.method == 'GET':
+        employees = Employees.objects.all()
+        serializer = EmployeeSerializer(employees, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'POST':
+        serializer = EmployeeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def employeeDetailsApi(request, pk):
+    if request.method == 'GET':
+        employees = Employees.objects.get(pk=pk)
+        serializer = EmployeeSerializer(employees)
+        return Response(serializer.data)
+
+    if request.method == 'PUT':
+        employees = Employees.objects.get(pk=pk)
+        serializer = EmployeeSerializer(employees, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+    if request.method == "DELETE":
+        employees = Employees.objects.get(pk=pk)
+        employees.delete()
         return Response({'Content just deleted'})
